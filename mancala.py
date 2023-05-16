@@ -87,34 +87,29 @@ def redistribute_seeds(player_name, pit, seeds):
             pits.update({pit:seeds_in_pit})
     return pit
 
-# def auto_move(player_name, pit):
-#     seeds = pits[pit]
-#     pits.update({pit:0})
-#     if player_name == "computer":
-#         not_my_bowl = 0
-#     else:
-#         not_my_bowl = 7
+#checks if the game is over, else returns False
+def game_status(pits):
+    player_pits_total = 0
+    comp_pits_total = 0
+    for i in range(8,14):
+        comp_pits_total += pits[i]
+    for i in range(1,7):
+        player_pits_total += pits[i]
+    if comp_pits_total == 0 or player_pits_total == 0:
+        return True 
+    else:
+        return False
 
-#     for seed in range(seeds):
-#         if pit - 1 < 0 or pit - 1 == not_my_bowl:
-#             pit = 13
-#             seeds_in_pit = pits[pit]
-#             seeds_in_pit += 1
-#             pits.update({pit:seeds_in_pit})
-#         else:
-#             pit -= 1
-#             seeds_in_pit = pits[pit]
-#             seeds_in_pit += 1
-#             pits.update({pit:seeds_in_pit})
-#     return pit
-
+#runs the actual game
 def play_game():
     game_over = False
     turn = player
     while game_over == False:
         if turn == computer and game_over == False:
             pit = 7
+            #loops computer's turn until game over or turn switch
             while pit == 7 and game_over == False:
+                #gets computer's move and redistributes the seeds
                 comp_move = comp_takes_seeds() 
                 pit = comp_move[0]
                 seeds = comp_move[1]
@@ -131,29 +126,15 @@ def play_game():
                         seeds = pits[pit]
                         pit = redistribute_seeds(player, pit, seeds)
                         
-                        #checking if player or computer pits are empty, therefore game_over == True
-                        player_pits_total = 0
-                        comp_pits_total = 0
-                        for i in range(8,14):
-                            comp_pits_total += pits[i]
-                        for i in range(1,7):
-                            player_pits_total += pits[i]
-                        if comp_pits_total == 0 or player_pits_total == 0:
-                            game_over = True
+                        #prevents another auto move if game over after last one
+                        game_over = game_status(pits)
 
                     display(player)
                     
-                #checking if player or computer pits are empty, therefore game_over == True
-                player_pits_total = 0
-                comp_pits_total = 0
-                for i in range(8,14):
-                    comp_pits_total += pits[i]
-                for i in range(1,7):
-                    player_pits_total += pits[i]
-                if comp_pits_total == 0 or player_pits_total == 0:
-                    game_over = True    
+                #prevents being stuck in loop if game over before turn switch
+                game_over = game_status(pits)  
 
-            #breaking if game_over == True, else switching turns            
+            #ending game if over, else switching turns          
             if game_over == True:
                 break
             else:
@@ -162,6 +143,7 @@ def play_game():
         elif turn == player and game_over == False:
             pit = 0
             while pit == 0 and game_over == False:
+                #player chooses move and seeds are redistributed
                 play_move = player_takes_seeds()
                 pit = play_move[0]
                 seeds = play_move[1]
@@ -179,35 +161,21 @@ def play_game():
                         seeds = pits[pit]
                         pit = redistribute_seeds(player, pit, seeds)
 
-                        #checking if player or computer pits are empty, therefore game_over == True
-                        player_pits_total = 0
-                        comp_pits_total = 0
-                        for i in range(8,14):
-                            comp_pits_total += pits[i]
-                        for i in range(1,7):
-                            player_pits_total += pits[i]
-                        if comp_pits_total == 0 or player_pits_total == 0:
-                            game_over = True
+                        #prevents another auto move if game over after last one
+                        game_over = game_status(pits)
 
                     display(player)
 
-                #checking if player or computer pits are empty, therefore game_over == True
-                player_pits_total = 0
-                comp_pits_total = 0
-                for i in range(8,14):
-                    comp_pits_total += pits[i]
-                for i in range(1,7):
-                    player_pits_total += pits[i]
-                if comp_pits_total == 0 or player_pits_total == 0:
-                    game_over = True    
+                #prevents being stuck in loop if game over before turn switch
+                game_over = game_status(pits) 
 
-            #breaking if game_over == True, else switching turns            
+            #ending game if over, else switching turns            
             if game_over == True:
                 break
             else:
                 turn = computer
 
-        #breaking out of play loop to end the game        
+        #breaking out of play loop to proceed to end of game     
         else:
             break
 
