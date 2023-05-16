@@ -47,7 +47,14 @@ def comp_takes_seeds():
     # print(pits)
     print("Computer is picking a pit...")
     while seeds == 0:
-        pit = random.randint(8,13)
+        #looking for free move, else picking random
+        for i in range(8,14):
+            num_to_hit_bowl = i - 7
+            if pits[i] == num_to_hit_bowl:
+                pit = i
+                break
+            else:
+                pit = random.randint(8,13)
         seeds = pits[pit]
     time.sleep(1)
     print(f"\nComputer takes {seeds} seeds from pit {pit}.")
