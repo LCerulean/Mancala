@@ -2,11 +2,13 @@ import os
 import time
 import random
 
+#sets up visual board and clear/updates it after each move
 def display(name):
     os.system('cls')
     title = "__Mancala__"
-    player_pit_lables = "6       5       4       3       2       1"
-    comp_pit_lables = "8       9       10      11      12      13"
+    gap = "       "
+    player_pit_lables = f"6{gap}5{gap}4{gap}3{gap}2{gap}1"
+    comp_pit_lables = f"8{gap}9{gap}10{gap}11{gap}12{gap}13"
     comp_name = "Computer"
     player_name = name
     vs = "--vs--"
@@ -19,9 +21,9 @@ def display(name):
 
     print(f"{header}\n{comp_pits}\n{bowls}\n{player_pits}\n{footer}")
 
+#has player pick a pit and returns error message if not an option
 def player_takes_seeds():
     seeds = 0
-    # print(pits)
     while seeds == 0:
         try:
             pit = int(input("\nPick a pit: "))
@@ -42,9 +44,9 @@ def player_takes_seeds():
     time.sleep(1)
     return pit, seeds
 
+#has computer choose a pit
 def comp_takes_seeds():
     seeds = 0
-    # print(pits)
     print("Computer is picking a pit...")
     while seeds == 0:
         #looking for free move, else picking random
@@ -64,6 +66,7 @@ def comp_takes_seeds():
     # print(f"seeds: {seeds}, pit: {pit}")
     return pit, seeds
 
+#takes pit chosen by player/computer and updates pits dict after redistributing
 def redistribute_seeds(player_name, pit, seeds):
     pits.update({pit:0})
     if player_name == "computer":
@@ -84,26 +87,26 @@ def redistribute_seeds(player_name, pit, seeds):
             pits.update({pit:seeds_in_pit})
     return pit
 
-def auto_move(player_name, pit):
-    seeds = pits[pit]
-    pits.update({pit:0})
-    if player_name == "computer":
-        not_my_bowl = 0
-    else:
-        not_my_bowl = 7
+# def auto_move(player_name, pit):
+#     seeds = pits[pit]
+#     pits.update({pit:0})
+#     if player_name == "computer":
+#         not_my_bowl = 0
+#     else:
+#         not_my_bowl = 7
 
-    for seed in range(seeds):
-        if pit - 1 < 0 or pit - 1 == not_my_bowl:
-            pit = 13
-            seeds_in_pit = pits[pit]
-            seeds_in_pit += 1
-            pits.update({pit:seeds_in_pit})
-        else:
-            pit -= 1
-            seeds_in_pit = pits[pit]
-            seeds_in_pit += 1
-            pits.update({pit:seeds_in_pit})
-    return pit
+#     for seed in range(seeds):
+#         if pit - 1 < 0 or pit - 1 == not_my_bowl:
+#             pit = 13
+#             seeds_in_pit = pits[pit]
+#             seeds_in_pit += 1
+#             pits.update({pit:seeds_in_pit})
+#         else:
+#             pit -= 1
+#             seeds_in_pit = pits[pit]
+#             seeds_in_pit += 1
+#             pits.update({pit:seeds_in_pit})
+#     return pit
 
 def play_game():
     game_over = False
@@ -118,13 +121,15 @@ def play_game():
                 pit = redistribute_seeds(computer, pit, seeds)
                 display(player) 
 
+                #checks if last landing pit qualifies for auto move
                 if pit >= 8 and pits[pit] == 1 and pits[op_pits[pit]] > 0:
                     print("Auto move!")
                     time.sleep(1)
                     while pit >= 8 and pits[pit] == 1 and pits[op_pits[pit]] > 0 and game_over == False:
                         pits[pit] += pits[op_pits[pit]] 
                         pits[op_pits[pit]] = 0
-                        pit = auto_move(computer, pit)
+                        seeds = pits[pit]
+                        pit = redistribute_seeds(player, pit, seeds)
                         
                         #checking if player or computer pits are empty, therefore game_over == True
                         player_pits_total = 0
@@ -164,13 +169,15 @@ def play_game():
                 display(player)
                 seeds_remaining = 0
                 
+                #checks if last landing pit qualifies for auto move
                 if pit > 0 and pit <= 6 and pits[pit] == 1 and pits[op_pits[pit]] > 0:
                     print("Auto move!")
                     time.sleep(1)
                     while pit > 0 and pit <= 6 and pits[pit] == 1 and pits[op_pits[pit]] > 0 and game_over == False:
                         pits[pit] += pits[op_pits[pit]] 
                         pits[op_pits[pit]] = 0
-                        pit = auto_move(player, pit)
+                        seeds = pits[pit]
+                        pit = redistribute_seeds(player, pit, seeds)
 
                         #checking if player or computer pits are empty, therefore game_over == True
                         player_pits_total = 0
@@ -239,6 +246,6 @@ player = "Lorelei"
 computer = "computer"
 turn = player
 
-display(player) #WORKING
+display(player) 
 play_game()    
 end_game()
