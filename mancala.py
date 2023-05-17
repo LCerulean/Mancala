@@ -40,9 +40,14 @@ def rules():
     input("\n[PRESS ANY KEY]")
 
 
-#sets up visual board and clear/updates it after each move
+#sets up visual board after clearing previous display in terminal
 def display():
-    os.system('cls')
+    #clear/reset the screen, try/except needed to work on multiple opperating systems.
+    try:
+        os.system('cls')
+    except:
+        os.system('clear')
+
     title = "__Mancala__"
     gap = " "
     player_pit_lables = f"6{7*gap}5{7*gap}4{7*gap}3{7*gap}2{7*gap}1"
