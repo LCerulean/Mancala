@@ -6,7 +6,7 @@ import random
 def rules():
     display(player)
     print("RULES:\n")
-    print("The board consists of 12 pits, each with 4 seeds, and 2 empty bowls.\nYour pits are the six on the bottom and your bowl is above your name.")
+    print("The board consists of 12 pits, each with 4 seeds, and 2 empty bowls.\nYour pits are the 6 on the bottom and your bowl is above your name.")
     time.sleep(5)
     print("\nOn your turn you will pick one of your 6 pits.\nThe seeds will be redistributed, 1 per pit, counter-clockwise.\nIf you pass your bowl, a seed goes in there too.")
     time.sleep(5)
@@ -15,7 +15,7 @@ def rules():
     print("\nIf your last seed lands in one of your empty pits, you take the opposite pit’s seeds!\nThis only works if your opponent has seeds in the opposite pit.\nThose seeds are then auto-redistributed around the board like a regular turn.")
     time.sleep(5)
     print("\nThe game ends when one side does not have any seeds left in their 6 pits.\nThe final score counts both your bowl and any seeds you have left in your pits.\nBe careful not to run out of seeds in your pits if your opponent still has a lot in theirs!")
-    time.sleep(5)
+    time.sleep(6)
     print("\nThat\'s it, have fun!")
 
     input("\n[PRESS ANY KEY]")
@@ -63,7 +63,7 @@ def player_takes_seeds():
             else:
                 print("That's not an option, please pick a number between 1 and 6.")
     time.sleep(1)
-    print(f"\nPlayer takes {seeds} seeds from pit {pit}.")
+    print(f"\n{player} takes {seeds} seeds from pit {pit}.")
     time.sleep(1)
     print("\nRedistributing seeds and updating gameboard...")
     time.sleep(1)
@@ -73,7 +73,7 @@ def player_takes_seeds():
 #has computer choose a pit
 def comp_takes_seeds():
     seeds = 0
-    print("Computer is picking a pit...")
+    print("\nComputer is picking a pit...")
     while seeds == 0:
         #looking for free move, else picking random
         for i in range(8,14):
@@ -150,7 +150,9 @@ def play_game():
 
                 #checks if last landing pit qualifies for auto move
                 if pit >= 8 and pits[pit] == 1 and pits[op_pits[pit]] > 0:
-                    print("Auto move!")
+                    print(f"\nThe computer takes {pits[op_pits[pit]]} from your pit!")
+                    time.sleep(1)
+                    print("\nRedistributing seeds and updating gameboard...")
                     time.sleep(1)
                     while pit >= 8 and pits[pit] == 1 and pits[op_pits[pit]] > 0 and game_over == False:
                         pits[pit] += pits[op_pits[pit]] 
@@ -165,6 +167,12 @@ def play_game():
                     
                 #prevents being stuck in loop if game over before turn switch
                 game_over = game_status(pits)  
+
+                #free move message if last seed landed in the bowl
+                if pit == 7 and game_over == False:
+                    print("\nFree move!")
+                    time.sleep(1)
+                    display(player)
 
             #ending game if over, else switching turns          
             if game_over == True:
@@ -185,7 +193,9 @@ def play_game():
                 
                 #checks if last landing pit qualifies for auto move
                 if pit > 0 and pit <= 6 and pits[pit] == 1 and pits[op_pits[pit]] > 0:
-                    print("Auto move!")
+                    print(f"\nYou take {pits[op_pits[pit]]} from the computer's pit!")
+                    time.sleep(1)
+                    print("\nRedistributing seeds and updating gameboard...")
                     time.sleep(1)
                     while pit > 0 and pit <= 6 and pits[pit] == 1 and pits[op_pits[pit]] > 0 and game_over == False:
                         pits[pit] += pits[op_pits[pit]] 
@@ -200,6 +210,12 @@ def play_game():
 
                 #prevents being stuck in loop if game over before turn switch
                 game_over = game_status(pits) 
+
+                #free move message if last seed landed in the bowl
+                if pit == 0 and game_over == False:
+                    print("\nFree move!")
+                    time.sleep(1)
+                    display(player)
 
             #ending game if over, else switching turns            
             if game_over == True:
@@ -217,15 +233,20 @@ def end_game():
     print("GAME OVER")
     time.sleep(1)
 
-    #getting scores
     player_pits_total = 0
     comp_pits_total = 0
+    #gets totals from pits and empties them
     for i in range(8,14):
         comp_pits_total += pits[i]
+        pits[i] = 0
     for i in range(1,7):
         player_pits_total += pits[i]
-    player_score = player_pits_total + pits[0]
-    comp_score = comp_pits_total + pits[7]
+        pits[i] = 0
+    #adds remaining seeds from pits to bowls
+    pits[0] += player_pits_total
+    pits[7] += comp_pits_total
+    player_score = pits[0]
+    comp_score = pits[7]
 
     #printing scores
     print(f"\nFinal score: Computer {str(comp_score)} / {player} {str(player_score)}\n")
@@ -247,7 +268,7 @@ seeds = 0
 pit = 0
 
 player = "Lorelei"
-computer = "computer"
+computer = "Computer"
 turn = player
 
 print("Welcome to Mancala!")
@@ -255,9 +276,9 @@ experience = input("Do you know how to play? (Y/N)\n").upper()
 if experience== "N" or experience == "NO":
     rules()
 else:
-    print("Awesome!\n")
+    print("\nAwesome!")
     time.sleep(1)
-print("If you ever decide you need a refresher on the rules, just type 'rules'.")
+print("\nIf you ever decide you need a refresher on the rules, just type 'rules'.")
 time.sleep(2)
 print("\nNow let's play!")
 time.sleep(1)
