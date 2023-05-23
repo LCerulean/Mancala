@@ -1,4 +1,5 @@
 import os
+import subprocess
 import time
 import random
 
@@ -44,9 +45,11 @@ def rules():
 def display():
     #clear/reset the screen, try/except needed to work on multiple opperating systems.
     try:
-        os.system('cls')
+        subprocess.call('clear')
     except:
-        os.system('clear')
+        os.system('cls')
+    # except:
+    #     os.system('clear')
 
     title = "__Mancala__"
     gap = " "
@@ -250,7 +253,7 @@ op_pits = {1:13, 2:12, 3:11, 4:10, 5:9, 6:8, 8:6, 9:5, 10:4, 11:3, 12:2, 13:1}
 # pit = 0
 
 #names for the players, can be changed to whatever
-player = "Lorelei"
+player = "Human"
 computer = "Computer"
 
 
